@@ -3,7 +3,7 @@ import { buyIceCream } from '../redux'
 import { connect } from 'react-redux'
 
 function iceCreamContainer(props) {
-    console.log(props.numOfIceCream)
+   // console.log(props.numOfIceCream)
   return (
     <>
     <h3>ice Cream Container</h3>
