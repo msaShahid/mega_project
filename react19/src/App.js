@@ -2,9 +2,10 @@
 import './App.css';
 import { Provider } from 'react-redux';
 import store from './redux/store';
-import CakeContainer from './components/CakeContainer';
-import HooksCakeConatiner from './components/HooksCakeConatiner';
-import IceCreamContainer from './components/iceCreamContainer';
+import NewCakeContainer from './components/NewCakeContainer';
+// import CakeContainer from './components/CakeContainer';
+// import HooksCakeConatiner from './components/HooksCakeConatiner';
+// import IceCreamContainer from './components/iceCreamContainer';
 
 // import DocTitle from './components/DocTitle';
 // import DocTitleTwo from './components/DocTitleTwo';
@@ -51,9 +52,10 @@ function App() {
 
     <Provider store={store}>
       <div className='App'>
-        <CakeContainer/>
+        {/* <CakeContainer/>
         <HooksCakeConatiner/>
-        <IceCreamContainer/>
+        <IceCreamContainer/> */}
+        <NewCakeContainer/>
       </div>
     </Provider>
   );
