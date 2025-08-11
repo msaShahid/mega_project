@@ -3,6 +3,7 @@ import './App.css';
 import { Provider } from 'react-redux';
 import store from './redux/store';
 import CakeContainer from './components/CakeContainer';
+import HooksCakeConatiner from './components/HooksCakeConatiner';
 
 // import DocTitle from './components/DocTitle';
 // import DocTitleTwo from './components/DocTitleTwo';
@@ -50,6 +51,7 @@ function App() {
     <Provider store={store}>
       <div className='App'>
         <CakeContainer/>
+        <HooksCakeConatiner/>
       </div>
     </Provider>
   );
