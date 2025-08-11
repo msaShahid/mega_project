@@ -3,6 +3,7 @@ import './App.css';
 import { Provider } from 'react-redux';
 import store from './redux/store';
 import NewCakeContainer from './components/NewCakeContainer';
+import ItemContainer from './components/ItemContainer';
 // import CakeContainer from './components/CakeContainer';
 // import HooksCakeConatiner from './components/HooksCakeConatiner';
 // import IceCreamContainer from './components/iceCreamContainer';
@@ -55,6 +56,8 @@ function App() {
         {/* <CakeContainer/>
         <HooksCakeConatiner/>
         <IceCreamContainer/> */}
+        <ItemContainer cake/>
+        <ItemContainer />
         <NewCakeContainer/>
       </div>
     </Provider>
