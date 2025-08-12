@@ -1,4 +1,9 @@
+import { useNavigate } from "react-router-dom";
+
 const Home = () => {
+    
+    const navigate = useNavigate()
+
     return(
         <>
             <section className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white">
@@ -10,6 +15,10 @@ const Home = () => {
                         <p className="text-xl md:text-2xl mb-8 text-blue-100 max-w-3xl mx-auto">
                         Experience the power of React 19
                         </p>
+                        <button 
+                        className="bg-blue-600 text-2xl text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-200"
+                        onClick={() => navigate('contact')}
+                        >Learn more</button>
                     </div>
                 </div>
             </section>
