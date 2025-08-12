@@ -1,6 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
 import MainLayout from "../layouts/MainLayout";
 import { lazy, Suspense } from 'react';
+import { NotFound } from "../pages/NotFound";
 
 const Home = lazy(() => import('../pages/Home'))
 const About = lazy(() => import('../pages/About'))
@@ -15,7 +16,9 @@ const withSuspense = (Component) => (
 
 const router = createBrowserRouter([
     {
-        path:'/', element: <MainLayout/>, 
+        path:'/', 
+        element: <MainLayout/>,
+        errorElement: <NotFound/>, 
         children : [
             {index: true, element: withSuspense(Home)},
             {path: 'about', element: withSuspense(About)},
