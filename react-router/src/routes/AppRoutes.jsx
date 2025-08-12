@@ -6,6 +6,7 @@ const Home = lazy(() => import('../pages/Home'))
 const About = lazy(() => import('../pages/About'))
 const Contact = lazy(() => import('../pages/Contact'))
 
+// eslint-disable-next-line no-unused-vars
 const withSuspense = (Component) => (
   <Suspense fallback={<div>Loading...</div>}>
     <Component />

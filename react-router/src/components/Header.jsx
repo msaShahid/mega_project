@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { useState } from 'react';
 import { Menu, X } from 'lucide-react';
 
@@ -18,36 +18,38 @@ export const Header = () => {
         <div className="flex justify-between items-center h-16">
 
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-2" aria-label="Home">
+          <NavLink to="/" className="flex items-center space-x-2" aria-label="Home">
             <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
               <span className="text-white font-bold text-lg">R</span>
             </div>
             <span className="text-xl font-bold text-gray-900">ReactApp</span>
-          </Link>
+          </NavLink>
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-6" aria-label="Main navigation">
             {navLinks.map(({ label, to }) => (
-              <Link
+              <NavLink
                 key={label}
                 to={to}
-                className="text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200"
+                className={({ isActive }) =>
+                    `font-medium transition-colors duration-200 ${ isActive ? 'text-blue-600 font-semibold' : 'text-gray-700 hover:text-blue-600'}`
+                }
               >
                 {label}
-              </Link>
+              </NavLink>
             ))}
-            <Link
+            <NavLink
               to="/login"
               className="text-blue-600 hover:text-blue-700 font-medium transition-colors duration-200"
             >
               Login
-            </Link>
-            <Link
+            </NavLink>
+            <NavLink
               to="/signup"
               className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-200"
             >
               Sign Up
-            </Link>
+            </NavLink>
           </nav>
 
           {/* Mobile Menu Button */}
@@ -64,30 +66,30 @@ export const Header = () => {
         {isMenuOpen && (
           <nav className="md:hidden bg-white border-t border-gray-200 px-4 py-4 space-y-3" aria-label="Mobile navigation">
             {navLinks.map(({ label, to }) => (
-              <Link
+              <NavLink
                 key={label}
                 to={to}
                 className="block text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200"
                 onClick={() => setIsMenuOpen(false)}
               >
                 {label}
-              </Link>
+              </NavLink>
             ))}
             <div className="pt-2 border-t border-gray-200 space-y-2">
-              <Link
+              <NavLink
                 to="/login"
                 className="block text-blue-600 hover:text-blue-700 font-medium transition-colors duration-200"
                 onClick={() => setIsMenuOpen(false)}
               >
                 Login
-              </Link>
-              <Link
+              </NavLink>
+              <NavLink
                 to="/signup"
                 className="block bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-200"
                 onClick={() => setIsMenuOpen(false)}
               >
                 Sign Up
-              </Link>
+              </NavLink>
             </div>
           </nav>
         )}
