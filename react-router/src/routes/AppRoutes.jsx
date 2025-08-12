@@ -8,8 +8,9 @@ const About = lazy(() => import('../pages/About'))
 const Contact = lazy(() => import('../pages/Contact'))
 const Product = lazy(() => import('../pages/Product'))
 
-const Featured = lazy(() => import('../components/FeaturedProducts'))
-const New = lazy(() => import('../components/NewProducts'))
+const FeaturedProducts = lazy(() => import('../components/FeaturedProducts'))
+const NewProducts = lazy(() => import('../components/NewProducts'))
+const NewProductDetail = lazy(() => import('../components/NewProductDetail'))
 
 // eslint-disable-next-line no-unused-vars
 const withSuspense = (Component) => (
@@ -31,9 +32,10 @@ const router = createBrowserRouter([
                 path: 'product', 
                 element: withSuspense(Product), 
                 children: [
-                    {index: true, element: withSuspense(Featured)},
-                    {path:'featured', element: withSuspense(Featured)},
-                    {path:'new', element: withSuspense(New)},
+                    {index: true, element: withSuspense(FeaturedProducts)},
+                    {path:'featured', element: withSuspense(FeaturedProducts)},
+                    {path:'new', element: withSuspense(NewProducts)},
+                    { path: 'new/:productId', element: withSuspense(NewProductDetail) },
                 ]
             },
         ],

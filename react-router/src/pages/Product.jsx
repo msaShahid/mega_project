@@ -21,7 +21,7 @@ const Product = () => {
                                 to="featured" 
                                 className="text-lg text-blue-600 hover:text-blue-800 font-semibold transition duration-200"
                             >
-                                Featured
+                               Product Featurs
                             </Link>
                         </li>
                         <li>
@@ -29,7 +29,7 @@ const Product = () => {
                                 to="new" 
                                 className="text-lg text-blue-600 hover:text-blue-800 font-semibold transition duration-200"
                             >
-                                New
+                                New Product
                             </Link>
                         </li>
                     </ul>
