@@ -1,4 +1,4 @@
-export const Home = () => {
+const Home = () => {
     return(
         <>
             <section className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white">
@@ -16,3 +16,5 @@ export const Home = () => {
         </>
     )
 }
+
+export default Home;

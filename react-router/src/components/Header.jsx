@@ -8,8 +8,8 @@ export const Header = () => {
 
   const navLinks = [
     { label: 'Home', to: '/' },
-    { label: 'About', to: '/about' },
-    { label: 'Contact', to: '/contact' },
+    { label: 'About', to: 'about' },
+    { label: 'Contact', to: 'contact' },
   ];
 
   return (
