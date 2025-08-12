@@ -31,6 +31,7 @@ const router = createBrowserRouter([
                 path: 'product', 
                 element: withSuspense(Product), 
                 children: [
+                    {index: true, element: withSuspense(Featured)},
                     {path:'featured', element: withSuspense(Featured)},
                     {path:'new', element: withSuspense(New)},
                 ]
