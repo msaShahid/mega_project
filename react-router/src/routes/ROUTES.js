@@ -2,12 +2,13 @@ const ROUTES = {
   HOME: '/',
   ABOUT: '/about',
   CONTACT: '/contact',
+  PROFILE: '/profile',
   DASHBOARD: '/dashboard',
   AUTH: {
-    LOGIN: '/auth/login',
-    REGISTER: '/auth/register',
-    FORGOT_PASSWORD: '/auth/forgot-password',
-    RESET_PASSWORD: '/auth/reset-password',
+    LOGIN: '/login',
+    SIGNUP: '/signup',
+    FORGOT_PASSWORD: '/forgot-password',
+    RESET_PASSWORD: '/reset-password',
   },
   PRODUCT: {
     BASE: '/product',

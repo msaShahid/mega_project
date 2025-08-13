@@ -1,17 +1,18 @@
 import { NavLink } from 'react-router-dom';
 import { useState } from 'react';
 import { Menu, X } from 'lucide-react';
+import ROUTES from '../routes/ROUTES';
 
 export const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const toggleMenu = () => setIsMenuOpen(prev => !prev);
 
   const navLinks = [
-    { label: 'Home', to: '/' },
-    { label: 'About', to: 'about' },
-    { label: 'Contact', to: 'contact' },
-    { label: 'Product', to: 'product' },
-    { label: 'Profile', to: 'profile' },
+    { label: 'Home', to: ROUTES.HOME },
+    { label: 'About', to: ROUTES.ABOUT },
+    { label: 'Contact', to: ROUTES.CONTACT },
+    { label: 'Product', to: ROUTES.PRODUCT.BASE },
+    { label: 'Profile', to: ROUTES.PROFILE },
   ];
 
   return (
@@ -20,7 +21,7 @@ export const Header = () => {
         <div className="flex justify-between items-center h-16">
 
           {/* Logo */}
-          <NavLink to="/" className="flex items-center space-x-2" aria-label="Home">
+          <NavLink to={ROUTES.HOME} className="flex items-center space-x-2" aria-label="Home">
             <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
               <span className="text-white font-bold text-lg">R</span>
             </div>
@@ -41,13 +42,13 @@ export const Header = () => {
               </NavLink>
             ))}
             <NavLink
-              to="/login"
+              to={ROUTES.AUTH.LOGIN}
               className="text-blue-600 hover:text-blue-700 font-medium transition-colors duration-200"
             >
               Login
             </NavLink>
             <NavLink
-              to="/signup"
+              to={ROUTES.AUTH.SIGNUP}
               className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-200"
             >
               Sign Up
@@ -79,14 +80,14 @@ export const Header = () => {
             ))}
             <div className="pt-2 border-t border-gray-200 space-y-2">
               <NavLink
-                to="/login"
+                to={ROUTES.AUTH.LOGIN}
                 className="block text-blue-600 hover:text-blue-700 font-medium transition-colors duration-200"
                 onClick={() => setIsMenuOpen(false)}
               >
                 Login
               </NavLink>
               <NavLink
-                to="/signup"
+                to={ROUTES.AUTH.SIGNUP}
                 className="block bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-200"
                 onClick={() => setIsMenuOpen(false)}
               >
