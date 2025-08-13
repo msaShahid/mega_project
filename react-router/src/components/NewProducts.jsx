@@ -6,10 +6,12 @@ const NewProducts = () => {
     const filter = searchParams.get('filter');
     const isActiveFilter = filter === 'active';
 
+    const imageUrl = 'https://www.kasandbox.org/programming-images/avatars/leaf-blue.png';
+
     const products = [
-        { id: 1, name: 'New Product 1', status: 'active' },
-        { id: 2, name: 'New Product 2', status: 'inactive' },
-        { id: 3, name: 'New Product 3', status: 'active' }
+        { id: 1, name: 'New Product 1', status: 'active', image: imageUrl },
+        { id: 2, name: 'New Product 2', status: 'inactive', image: imageUrl },
+        { id: 3, name: 'New Product 3', status: 'active', image: imageUrl }
     ];
 
     const filteredProducts = isActiveFilter
@@ -45,6 +47,11 @@ const NewProducts = () => {
                         key={product.id}
                         className="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition duration-200"
                     >
+                        <img 
+                            src={product.image}
+                            alt={product.name}
+                            className="w-full h-40 object-cover rounded-md mb-3"
+                        />
                         <h3 className="font-semibold text-lg text-gray-800">{product.name}</h3>
                         <Link 
                             to={`/product/new/${product.id}`} 
