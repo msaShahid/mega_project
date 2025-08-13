@@ -5,8 +5,8 @@ const ROUTES = {
   PROFILE: '/profile',
   DASHBOARD: '/dashboard',
   AUTH: {
-    LOGIN: '/login',
-    SIGNUP: '/signup',
+    LOGIN: '/login',             
+    SIGNUP: '/register',
     FORGOT_PASSWORD: '/forgot-password',
     RESET_PASSWORD: '/reset-password',
   },

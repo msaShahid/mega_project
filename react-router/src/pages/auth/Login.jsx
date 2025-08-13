@@ -12,7 +12,7 @@ const Login = () => {
         <h2 className="text-3xl font-bold text-gray-900">Sign in to your account</h2>
         <p className="mt-2 text-gray-600">
           Don't have an account?{' '}
-          <Link to={ROUTES.HOME} className="font-medium text-blue-600 hover:text-blue-500">
+          <Link to={ROUTES.AUTH.SIGNUP} className="font-medium text-blue-600 hover:text-blue-500">
             Sign up here
           </Link>
         </p>
@@ -77,7 +77,7 @@ const Login = () => {
           </div>
 
           <Link
-            to={ROUTES.HOME}
+            to={ROUTES.AUTH.FORGOT_PASSWORD}
             className="text-sm text-blue-600 hover:text-blue-500"
           >
             Forgot your password?
