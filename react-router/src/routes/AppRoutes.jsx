@@ -2,12 +2,15 @@ import { createBrowserRouter } from "react-router-dom";
 import MainLayout from "../layouts/MainLayout";
 import { lazy, Suspense } from 'react';
 import { NotFound } from "../pages/NotFound";
+import AuthLayout from "../layouts/AuthLayout";
 
 const Home = lazy(() => import('../pages/Home'))
 const About = lazy(() => import('../pages/About'))
 const Contact = lazy(() => import('../pages/Contact'))
 const Product = lazy(() => import('../pages/Product'))
 const Profile = lazy(() => import('../pages/Profile'))
+
+const Login = lazy(() => import('../pages/auth/Login'))
 
 const FeaturedProducts = lazy(() => import('../components/FeaturedProducts'))
 const NewProducts = lazy(() => import('../components/NewProducts'))
@@ -42,6 +45,14 @@ const router = createBrowserRouter([
             },
         ],
 
+    },
+    {
+        path: '/login',
+        element: <AuthLayout/>,
+        errorElement: <NotFound/>, 
+        children: [
+            {path: '/login', element: withSuspense(Login),}
+        ]
     },
    
 ])
