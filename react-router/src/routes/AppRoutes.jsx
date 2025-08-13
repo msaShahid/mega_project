@@ -7,6 +7,7 @@ const Home = lazy(() => import('../pages/Home'))
 const About = lazy(() => import('../pages/About'))
 const Contact = lazy(() => import('../pages/Contact'))
 const Product = lazy(() => import('../pages/Product'))
+const Profile = lazy(() => import('../pages/Profile'))
 
 const FeaturedProducts = lazy(() => import('../components/FeaturedProducts'))
 const NewProducts = lazy(() => import('../components/NewProducts'))
@@ -28,6 +29,7 @@ const router = createBrowserRouter([
             {index: true, element: withSuspense(Home)},
             {path: 'about', element: withSuspense(About)},
             {path: 'contact', element: withSuspense(Contact)},
+            {path: 'profile', element: withSuspense(Profile)},
             {
                 path: 'product', 
                 element: withSuspense(Product), 

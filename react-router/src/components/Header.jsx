@@ -11,6 +11,7 @@ export const Header = () => {
     { label: 'About', to: 'about' },
     { label: 'Contact', to: 'contact' },
     { label: 'Product', to: 'product' },
+    { label: 'Profile', to: 'profile' },
   ];
 
   return (
