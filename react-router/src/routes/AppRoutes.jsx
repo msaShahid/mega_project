@@ -17,6 +17,7 @@ const Home = lazy(() => import('../pages/Home'))
 const About = lazy(() => import('../pages/About'))
 const Contact = lazy(() => import('../pages/Contact'))
 const Profile = lazy(() => import('../pages/Profile'))
+const Galambo = lazy(() => import('../pages/Galambo'))
 
 // Product
 const Product = lazy(() => import('../pages/Product'))
@@ -42,6 +43,7 @@ const router = createBrowserRouter([
             {path: ROUTES.ABOUT, element: withSuspense(About)},
             {path: ROUTES.CONTACT, element: withSuspense(Contact)},
             {path: ROUTES.PROFILE, element: withSuspense(Profile)},
+            {path: ROUTES.GALAMBO, element: withSuspense(Galambo)},
             {
                 path: ROUTES.PRODUCT.BASE, 
                 element: withSuspense(Product), 

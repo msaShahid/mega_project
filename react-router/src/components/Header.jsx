@@ -13,6 +13,7 @@ export const Header = () => {
     { label: 'Contact', to: ROUTES.CONTACT },
     { label: 'Product', to: ROUTES.PRODUCT.BASE },
     { label: 'Profile', to: ROUTES.PROFILE },
+    { label: 'Galambo', to: ROUTES.GALAMBO },
   ];
 
   return (

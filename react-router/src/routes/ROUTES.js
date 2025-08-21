@@ -3,6 +3,7 @@ const ROUTES = {
   ABOUT: '/about',
   CONTACT: '/contact',
   PROFILE: '/profile',
+  GALAMBO: '/galambo',
   DASHBOARD: '/dashboard',
   AUTH: {
     LOGIN: '/login',             
