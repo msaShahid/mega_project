@@ -90,19 +90,7 @@ const Galambo = () => {
                         </div>
                     </div>
                     
-                    <div className="flex justify-center space-x-4 mb-8">
-                        <button className="bg-gray-900 text-white px-8 py-3 rounded-full font-medium hover:bg-gray-800 transition-colors">
-                            Basic
-                        </button>
-                        <button className="bg-gray-100 text-gray-700 px-8 py-3 rounded-full font-medium hover:bg-gray-200 transition-colors flex items-center space-x-2">
-                            <Crown className="text-orange-500" size={20} />
-                            <span>Plus</span>
-                        </button>
-                        <button className="bg-gray-100 text-gray-700 px-8 py-3 rounded-full font-medium hover:bg-gray-200 transition-colors flex items-center space-x-2">
-                            <Zap className="text-orange-500" size={20} />
-                            <span>Ultra</span>
-                        </button>
-                    </div>
+      
                 </div>
 
 
