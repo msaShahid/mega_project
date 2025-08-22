@@ -1,6 +1,52 @@
-import { Search, Image, Crown, Zap, Heart, Gamepad2, Laptop } from 'lucide-react';
+import { Search, Image, Crown, Zap, Heart, Gamepad2, Laptop, UserStar } from 'lucide-react';
+import { useState } from 'react';
+import axios from 'axios'
 
 const Galambo = () => {
+
+    const [search, setSearch] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [result, setResult] = useState([]);
+    const [error, setError] = useState('');
+    const token = '**********************';
+
+    const handleSearch = async () => {
+        console.log('search : ', search)
+        if(!search) return alert('Please enter search data!');
+
+        setLoading(true)
+
+        try {
+
+            const formData = new FormData();
+            formData.append('llm_provider', 'openai');
+            formData.append('user_id', 'default');
+            formData.append('user_query', search);
+
+            const response = await axios.post(
+                'https://www.google.com/search',
+                formData,
+                {
+                    headers: {
+                        'accept': 'application/json',
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'multipart/form-data',
+                    },
+                }
+            );
+
+            const data = response.data;
+            setResult(data);
+            //console.log(data);
+
+        } catch (error) {
+            console.log(error);
+            setError(error.message);
+        } finally {
+            setLoading(false)
+        }
+    }
+
     return(
         <>
             <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
@@ -30,10 +76,15 @@ const Galambo = () => {
                         </button>
                         <input
                             type="text"
+                            value={search}
+                            onChange={e => setSearch(e.target.value)}
                             placeholder="Start Searching Now"
                             className="flex-1 bg-transparent px-4 py-4 text-lg placeholder-gray-400 focus:outline-none"
                         />
-                        <button className="m-2 bg-orange-500 text-white p-3 rounded-lg hover:bg-orange-600 transition-colors">
+                        <button 
+                            className="m-2 bg-orange-500 text-white p-3 rounded-lg hover:bg-orange-600 transition-colors"
+                            onClick={handleSearch}
+                        >
                             <Search size={24} />
                         </button>
                         </div>
@@ -53,6 +104,21 @@ const Galambo = () => {
                         </button>
                     </div>
                 </div>
+
+
+                {loading && <div className='text-gray-400 px-4 py-2 text-2xl'>Loading...</div>}
+                {error && <div className='px-4 py-2 text-2xl text-red-500'>{error}</div>}
+
+                <div className="mt-8">
+                    {result.length > 0 ? (
+                        <div className="px-4 py-2 text-2xl">
+                            {result ? 'Search done' : 'Not found'}
+                        </div>
+                    ) : (
+                        !loading && <div className="text-center text-gray-500">No results found.</div>
+                    )}
+                </div>
+
             </div>
         </>
     )
