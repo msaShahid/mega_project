@@ -12,16 +12,21 @@ const Galambo = () => {
 
     const handleSearch = async () => {
         console.log('search : ', search)
-        if(!search) return alert('Please enter search data!');
+
+        if (!search?.trim()) {
+            alert('Please enter search data!');
+            return;
+        }
 
         setLoading(true)
+        setError(null)
 
         try {
 
             const formData = new FormData();
             formData.append('llm_provider', 'openai');
             formData.append('user_id', 'default');
-            formData.append('user_query', search);
+            formData.append('user_query', search.trim());
 
             const response = await axios.post(
                 'https://www.google.com/search',
@@ -36,11 +41,12 @@ const Galambo = () => {
             );
 
             const data = response.data;
+            if (!data) throw new Error("No data returned from the server.");
             setResult(data);
             //console.log(data);
 
         } catch (error) {
-            console.log(error);
+            console.error('Search Error:', error);
             setError(error.message);
         } finally {
             setLoading(false)
