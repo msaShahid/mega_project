@@ -7,19 +7,22 @@ import { useAuth } from '../../context/auth-context';
 const Login = () => {
 
   const navigate = useNavigate();
-  const login = useAuth()
-  console.log(login.login);
-  const [showPassword, setShowPassword] = useState(false);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('')
+  const { login } = useAuth();
+  
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const authDetails = {email, password};
-    login(authDetails)
-    navigate(ROUTES.PROFILE);
-    console.log('Login : ', authDetails)
-  }
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+
+  const handleLogin = (e) => {
+    e.preventDefault(); 
+    if (email && password) {
+      login({ email }); 
+      navigate(ROUTES.PROFILE, { replace: true });
+    }
+  };
+
+
   return (
     <div className="space-y-6">
       <div className="text-center">
@@ -32,7 +35,8 @@ const Login = () => {
         </p>
       </div>
 
-      <form className="space-y-6" onSubmit={handleSubmit}>
+      <form className="space-y-6" >
+         
         <div>
           <label htmlFor="email" className="block text-sm font-medium text-gray-700">
             Email address
@@ -102,12 +106,12 @@ const Login = () => {
         </div>
 
         <button
-          type="submit"
+          onClick={handleLogin}
           className="w-full flex justify-center items-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
         >
             <>
               <LogIn className="w-4 h-4 mr-2" />
-              Sign in
+              Login in
             </>
         </button>
       </form>

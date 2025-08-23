@@ -2,17 +2,20 @@ import { NavLink } from 'react-router-dom';
 import { useState } from 'react';
 import { Menu, X } from 'lucide-react';
 import ROUTES from '../routes/ROUTES';
+import { useAuth } from '../context/auth-context';
 
 export const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const toggleMenu = () => setIsMenuOpen(prev => !prev);
+
+  const { user, logout } = useAuth() || {};
 
   const navLinks = [
     { label: 'Home', to: ROUTES.HOME },
     { label: 'About', to: ROUTES.ABOUT },
     { label: 'Contact', to: ROUTES.CONTACT },
     { label: 'Product', to: ROUTES.PRODUCT.BASE },
-    { label: 'Profile', to: ROUTES.PROFILE },
+   // { label: 'Profile', to: ROUTES.PROFILE },
     { label: 'Galambo', to: ROUTES.GALAMBO },
   ];
 
@@ -42,18 +45,21 @@ export const Header = () => {
                 {label}
               </NavLink>
             ))}
-            <NavLink
-              to={ROUTES.AUTH.LOGIN}
-              className="text-blue-600 hover:text-blue-700 font-medium transition-colors duration-200"
-            >
-              Login
-            </NavLink>
-            <NavLink
-              to={ROUTES.AUTH.SIGNUP}
-              className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-200"
-            >
-              Sign Up
-            </NavLink>
+
+            {user ? (
+                  <>
+                      <NavLink to={ROUTES.PROFILE} className="text-blue-600 hover:text-blue-700 font-medium">Profile</NavLink>
+                      <button onClick={logout} className="text-red-600 hover:text-red-700 font-medium">Logout</button>
+                  </>
+              ) : (
+                  <>
+                      <NavLink to={ROUTES.AUTH.LOGIN} className="text-blue-600 hover:text-blue-700 font-medium">Login</NavLink>
+                      <NavLink to={ROUTES.AUTH.SIGNUP} className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-200">Sign Up</NavLink>
+                  </>
+              )
+            }
+            
+            
           </nav>
 
           {/* Mobile Menu Button */}
