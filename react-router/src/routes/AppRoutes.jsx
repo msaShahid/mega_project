@@ -4,7 +4,7 @@ import { lazy, Suspense } from 'react';
 import { NotFound } from "../pages/NotFound";
 import AuthLayout from "../layouts/AuthLayout";
 import ROUTES from "../routes/ROUTES";
-
+import PrivateRoute from '../components/PrivateRoute';
 
 // Auth
 const Login = lazy(() => import('../pages/auth/Login'))
@@ -33,6 +33,13 @@ const withSuspense = (Component) => (
   </Suspense>
 );
 
+const withAuth = (Component) => (
+  <PrivateRoute>
+    {withSuspense(Component)}
+  </PrivateRoute>
+);
+
+
 const router = createBrowserRouter([
     {
         path: ROUTES.HOME, 
@@ -42,7 +49,7 @@ const router = createBrowserRouter([
             {index: true, element: withSuspense(Home)},
             {path: ROUTES.ABOUT, element: withSuspense(About)},
             {path: ROUTES.CONTACT, element: withSuspense(Contact)},
-            {path: ROUTES.PROFILE, element: withSuspense(Profile)},
+            {path: ROUTES.PROFILE, element: withAuth(Profile)},
             {path: ROUTES.GALAMBO, element: withSuspense(Galambo)},
             {
                 path: ROUTES.PRODUCT.BASE, 
