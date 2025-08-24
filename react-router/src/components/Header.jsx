@@ -15,8 +15,8 @@ export const Header = () => {
     { label: 'About', to: ROUTES.ABOUT },
     { label: 'Contact', to: ROUTES.CONTACT },
     { label: 'Product', to: ROUTES.PRODUCT.BASE },
-   // { label: 'Profile', to: ROUTES.PROFILE },
-    { label: 'Galambo', to: ROUTES.GALAMBO },
+    //{ label: 'Profile', to: ROUTES.PROFILE },
+    //{ label: 'Galambo', to: ROUTES.GALAMBO },
   ];
 
   return (
@@ -48,6 +48,7 @@ export const Header = () => {
 
             {user ? (
                   <>
+                      <NavLink to={ROUTES.GALAMBO} className="text-blue-600 hover:text-blue-700 font-medium">AI Search</NavLink>
                       <NavLink to={ROUTES.PROFILE} className="text-blue-600 hover:text-blue-700 font-medium">Profile</NavLink>
                       <button onClick={logout} className="text-red-600 hover:text-red-700 font-medium">Logout</button>
                   </>

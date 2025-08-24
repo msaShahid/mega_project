@@ -50,7 +50,7 @@ const router = createBrowserRouter([
             {path: ROUTES.ABOUT, element: withSuspense(About)},
             {path: ROUTES.CONTACT, element: withSuspense(Contact)},
             {path: ROUTES.PROFILE, element: withAuth(Profile)},
-            {path: ROUTES.GALAMBO, element: withSuspense(Galambo)},
+            {path: ROUTES.GALAMBO, element: withAuth(Galambo)},
             {
                 path: ROUTES.PRODUCT.BASE, 
                 element: withSuspense(Product), 
