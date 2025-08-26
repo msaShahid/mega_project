@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { Helmet } from 'react-helmet';
 
 const Home = () => {
     
@@ -6,6 +7,11 @@ const Home = () => {
 
     return(
         <>
+
+        <Helmet>
+            <title>Home page</title>
+            <meta name="description" content="This is the Home page" />
+        </Helmet>
             <section className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
                     <div className="text-center">
