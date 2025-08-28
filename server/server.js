@@ -14,9 +14,11 @@ app.use(express.json());
 
 app.use(errorHandler)
 
-app.use(morgan('combined', {
-  stream: { write: (msg) => logger.info(msg.trim()) }
-}));
+if (process.env.NODE_ENV !== 'test') {
+    app.use(morgan('combined', {
+        stream: { write: (msg) => logger.info(msg.trim()) }
+    }));
+}
 
 connectDB(config.mongoURI);
 app.listen(config.port, () => console.log(`Server running on port ${config.port}`));
