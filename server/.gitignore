@@ -11,6 +11,10 @@ node_modules
 dist
 dist-ssr
 *.local
+
+
+# Environment variables
+config/*.env
 .env
 
 # Editor directories and files
