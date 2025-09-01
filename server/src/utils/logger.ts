@@ -2,7 +2,7 @@ import winston from 'winston';
 import fs from 'fs';
 import path from 'path';
 
-const logDir = 'logs';
+const logDir = 'src/logs';
 if (!fs.existsSync(logDir)) {
   fs.mkdirSync(logDir);
 }
