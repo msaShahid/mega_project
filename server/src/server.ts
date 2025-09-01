@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
+import compression from 'compression';
 
 import config from './config/index'; 
 import connectDB from './config/db';
@@ -16,6 +17,7 @@ const app = express();
 // Middleware
 app.use(cors());
 app.use(express.json());
+app.use(compression());
 
 if (process.env.NODE_ENV !== 'test') {
   app.use(
