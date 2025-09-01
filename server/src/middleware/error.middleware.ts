@@ -1,8 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
-import logger from '../utils/logger.js';
+import logger from '../utils/logger';
 
 interface CustomError extends Error {
   status?: number;
+  isOperational?: boolean;
 }
 
 const errorHandler = (
@@ -11,20 +12,37 @@ const errorHandler = (
   res: Response,
   next: NextFunction
 ) => {
-  const statusCode = err.status || 500;
+ 
+  const statusCode = err.status ?? 500;
+  const isOperational = err.isOperational ?? false;
 
-  // Log full error details
-  logger.error({
-    message: err.message,
-    stack: err.stack,
-    status: statusCode,
-    method: req.method,
-    url: req.originalUrl,
-  });
+  if (statusCode >= 500) {
+    logger.error({
+      message: err.message,
+      stack: err.stack,
+      status: statusCode,
+      method: req.method,
+      url: req.originalUrl,
+    });
+  } else {
+    logger.warn({
+      message: err.message,
+      status: statusCode,
+      method: req.method,
+      url: req.originalUrl,
+    });
+  }
+
+  const message =
+    process.env.NODE_ENV === 'production' && !isOperational
+      ? 'Internal Server Error'
+      : err.message;
 
   res.status(statusCode).json({
-    message: err.message || 'Internal Server Error',
-    error: statusCode === 500 ? 'Internal Server Error' : err.message,
+    message,
+    error: statusCode === 500 && (!isOperational || process.env.NODE_ENV === 'production')
+      ? 'Internal Server Error'
+      : err.message,
   });
 };
 
