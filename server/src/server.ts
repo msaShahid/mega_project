@@ -9,6 +9,7 @@ import connectDB from './config/db';
 import logger from './utils/logger';
 import errorHandler from './middleware/error.middleware';
 import limiter from './middleware/rateLimiter'
+import authRoutes from './routes/auth.routes';
 
 // Connect to MongoDB
 connectDB(config.mongoURI);
@@ -34,6 +35,8 @@ if (process.env.NODE_ENV !== 'test') {
     })
   );
 }
+
+app.use('/api/auth', authRoutes);
 
 app.get('/', (req, res) => {
   res.send('Hello Secure TypeScript World!');
