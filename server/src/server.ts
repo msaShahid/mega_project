@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
 import compression from 'compression';
+import helmet from 'helmet';
 
 import config from './config/index'; 
 import connectDB from './config/db';
@@ -15,7 +16,10 @@ connectDB(config.mongoURI);
 // Initialize Express app
 const app = express();
 
-// Middleware
+// Apply security middlewares
+app.use(helmet());      
+
+// Middlewares
 app.use(cors());
 app.use(express.json());
 app.use(compression());
@@ -30,6 +34,10 @@ if (process.env.NODE_ENV !== 'test') {
     })
   );
 }
+
+app.get('/', (req, res) => {
+  res.send('Hello Secure TypeScript World!');
+});
 
 // Error handler middleware 
 app.use(errorHandler);
