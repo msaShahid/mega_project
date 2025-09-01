@@ -7,6 +7,7 @@ import config from './config/index';
 import connectDB from './config/db';
 import logger from './utils/logger';
 import errorHandler from './middleware/error.middleware';
+import limiter from './middleware/rateLimiter'
 
 // Connect to MongoDB
 connectDB(config.mongoURI);
@@ -18,6 +19,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(compression());
+app.use(limiter);
 
 if (process.env.NODE_ENV !== 'test') {
   app.use(
