@@ -74,3 +74,8 @@ export const loginUser = async (data: { email: string; password: string }): Prom
 
   return user;
 };
+
+export const getAllUsers = async (onlyVerified = false): Promise<IUser[]> => {
+  const filter = onlyVerified ? { isVerified: true } : {};
+  return await User.find(filter).select('-password -otp -otpExpires');
+};

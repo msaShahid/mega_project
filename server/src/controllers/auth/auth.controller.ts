@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { registerUser, loginUser } from '../../services/auth/auth.service';
+import { registerUser, loginUser, getAllUsers } from '../../services/auth/auth.service';
 import { registerSchema, loginSchema } from '../../validators/auth/auth.validation';
 
 export const register = async (req: Request, res: Response) => {
@@ -48,5 +48,16 @@ export const login = async (req: Request, res: Response) => {
       return res.status(400).json({ errors: error.errors.map((e: any) => e.message) });
     }
     res.status(400).json({ error: error.message || 'An error occurred' });
+  }
+};
+
+export const listUsers = async (req: Request, res: Response) => {
+  try {
+    const onlyVerified = req.query.verified === 'true';
+    const users = await getAllUsers(onlyVerified);
+
+    res.status(200).json({ users });
+  } catch (error: any) {
+    res.status(500).json({ error: 'Failed to fetch users' });
   }
 };
