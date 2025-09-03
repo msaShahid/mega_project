@@ -1,10 +1,5 @@
 import User, { IUser } from '../../models/auth/user.model';
-
-const OTP_EXPIRATION_MINUTES = 10;
-
-const generateOtp = (): string => {
-  return (Math.floor(100000 + Math.random() * 900000)).toString(); // 6-digit OTP
-};
+import {generateOtp} from '../../utils/generateOtp';
 
 export const registerUser = async (data: {
   name: string;
@@ -38,8 +33,7 @@ export const registerUser = async (data: {
   }
 
   // New user registration with OTP
-  const otp = generateOtp();
-  const otpExpires = new Date(Date.now() + OTP_EXPIRATION_MINUTES * 60 * 1000);
+  const { otp, otpExpires } = generateOtp();
 
   user = new User({
     name,
