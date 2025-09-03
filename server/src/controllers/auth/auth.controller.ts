@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { registerUser, loginUser, getAllUsers } from '../../services/auth/auth.service';
 import { registerSchema, loginSchema } from '../../validators/auth/auth.validation';
+import { generateToken } from '../../utils/jwt';
 
 export const register = async (req: Request, res: Response) => {
   try {
@@ -33,6 +34,7 @@ export const login = async (req: Request, res: Response) => {
     const parsed = loginSchema.parse(req.body);
 
     const user = await loginUser(parsed);
+    const token = generateToken(user);
 
     res.status(200).json({
       message: 'Login successful',
@@ -41,7 +43,7 @@ export const login = async (req: Request, res: Response) => {
         name: user.name,
         email: user.email,
       },
-      // token: 'jwt_token_here' // Add JWT token generation if needed
+       token, 
     });
   } catch (error: any) {
     if (error.errors) {
