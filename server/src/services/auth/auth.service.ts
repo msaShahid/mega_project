@@ -1,5 +1,6 @@
-import User, { IUser } from '../../models/auth/user.model';
-import {generateOtp} from '../../utils/generateOtp';
+import User, { IUser } from '@models/auth/user.model';
+import {generateOtp} from '@utils/generateOtp';
+import { normalizeEmail } from '@utils/normalizeEmail';
 
 export const registerUser = async (data: {
   name: string;
@@ -8,8 +9,9 @@ export const registerUser = async (data: {
   verifyOtp?: string;
 }): Promise<IUser> => {
   const { name, email, password, verifyOtp } = data;
+  const normalizedEmail = normalizeEmail(email)
 
-  let user = await User.findOne({ email });
+  let user = await User.findOne({ normalizedEmail });
 
   if (user) {
     if (user.isVerified) {
@@ -55,8 +57,9 @@ export const registerUser = async (data: {
 
 export const loginUser = async (data: { email: string; password: string }): Promise<IUser> => {
   const { email, password } = data;
+  const normalizedEmail = normalizeEmail(email)
 
-  const user = await User.findOne({ email });
+  const user = await User.findOne({ normalizedEmail });
   if (!user || !user.isVerified) {
     throw new Error('Invalid credentials or email not verified.');
   }

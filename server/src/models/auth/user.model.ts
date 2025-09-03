@@ -18,8 +18,8 @@ const userSchema = new Schema<IUser>(
         email: { type: String, required: true, unique: true, lowercase: true, trim: true },
         password: { type: String, required: true },
         isVerified: { type: Boolean, default: false },
-        otp: { type: String },
-        otpExpires: { type: Date },
+        otp: { type: String, default: null },
+        otpExpires: { type: Date, default: null },
     }, 
     { timestamps: true }
 );
