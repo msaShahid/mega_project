@@ -1,56 +1,70 @@
 import User, { IUser } from '@models/auth/user.model';
 import {generateOtp} from '@utils/generateOtp';
 import { normalizeEmail } from '@utils/normalizeEmail';
+import { sendOtpEmail } from '@utils/mailOtp';
 
 export const registerUser = async (data: {
   name: string;
   email: string;
   password: string;
-  verifyOtp?: string;
 }): Promise<IUser> => {
-  const { name, email, password, verifyOtp } = data;
-  const normalizedEmail = normalizeEmail(email)
+  const { name, email, password } = data;
+  const normalizedEmail = normalizeEmail(email);
 
-  let user = await User.findOne({ normalizedEmail });
+  const existingUser = await User.findOne({ email: normalizedEmail });
 
-  if (user) {
-    if (user.isVerified) {
-      throw new Error('User already registered and verified.');
-    } else {
-      // User exists but not verified, verify OTP
-      if (!verifyOtp) {
-        throw new Error('Please provide OTP for verification.');
-      }
-      if (user.otp !== verifyOtp || (user.otpExpires && user.otpExpires < new Date())) {
-        throw new Error('Invalid or expired OTP.');
-      }
-
-      user.isVerified = true;
-      user.otp = undefined;
-      user.otpExpires = undefined;
-      await user.save();
-
-      return user;
-    }
+  if (existingUser && existingUser.isVerified) {
+    throw new Error('User already registered and verified.');
   }
 
-  // New user registration with OTP
   const { otp, otpExpires } = generateOtp();
 
-  user = new User({
+  if (existingUser) {
+    // Update OTP for unverified user
+    existingUser.otp = otp;
+    existingUser.otpExpires = otpExpires;
+    await existingUser.save();
+    await sendOtpEmail(email, otp);
+    return existingUser;
+  }
+
+  // Create new user
+  const newUser = new User({
     name,
     email,
+    normalizedEmail,
     password,
     otp,
     otpExpires,
     isVerified: false,
   });
 
+  await newUser.save();
+  await sendOtpEmail(email, otp);
+
+  return newUser;
+};
+
+export const verifyOtp = async (data: {
+  email: string;
+  otp: string;
+}): Promise<IUser> => {
+  const { email, otp } = data;
+  const normalizedEmail = normalizeEmail(email);
+
+  const user = await User.findOne({ email: normalizedEmail });
+
+  if (!user) throw new Error('User not found.');
+  if (user.isVerified) throw new Error('User already verified.');
+  if (!user.otp || !user.otpExpires) throw new Error('No OTP found.');
+  // if (user.otp !== otp || user.otpExpires < new Date()) {
+  //   throw new Error('Invalid or expired OTP.');
+  // }
+
+  user.isVerified = true;
+  user.otp = undefined;
+  user.otpExpires = undefined;
   await user.save();
-
-  // TODO: Send OTP to email
-
-  console.log(`Send OTP ${otp} to user email ${email}`);
 
   return user;
 };
@@ -59,7 +73,7 @@ export const loginUser = async (data: { email: string; password: string }): Prom
   const { email, password } = data;
   const normalizedEmail = normalizeEmail(email)
 
-  const user = await User.findOne({ normalizedEmail });
+  const user = await User.findOne({ email: normalizedEmail });
   if (!user || !user.isVerified) {
     throw new Error('Invalid credentials or email not verified.');
   }

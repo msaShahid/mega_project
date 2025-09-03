@@ -1,18 +1,17 @@
 import { Request, Response } from 'express';
-import { registerUser, loginUser, getAllUsers } from '../../services/auth/auth.service';
-import { registerSchema, loginSchema } from '../../validators/auth/auth.validation';
-import { generateToken } from '../../utils/jwt';
+import { registerUser, verifyOtp, loginUser, getAllUsers } from '@services/auth/auth.service';
+import { registerSchema, loginSchema, verifyOtpSchema } from '@validators/auth/auth.validation';
+import { generateToken } from '@utils/jwt';
 
 export const register = async (req: Request, res: Response) => {
   try {
     const parsed = registerSchema.parse(req.body);
-
     const user = await registerUser(parsed);
 
-    res.status(user.isVerified ? 200 : 201).json({
+    return res.status(user.isVerified ? 200 : 201).json({
       message: user.isVerified
         ? 'User verified successfully. You can now log in.'
-        : 'User registered. Please verify OTP sent to your email.',
+        : 'User registered. Please verify the OTP sent to your email.',
       user: {
         id: user._id,
         name: user.name,
@@ -26,6 +25,27 @@ export const register = async (req: Request, res: Response) => {
       return res.status(400).json({ errors: error.errors.map((e: any) => e.message) });
     }
     res.status(400).json({ error: error.message || 'An error occurred' });
+  }
+};
+
+export const verifyUser = async (req: Request, res: Response) => {
+  try {
+    const parsed = verifyOtpSchema.parse(req.body);
+    const user = await verifyOtp(parsed);
+
+    return res.status(200).json({
+      message: 'Account verified successfully.',
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        isVerified: user.isVerified,
+      },
+    });
+  } catch (err) {
+    return res.status(400).json({
+      error: err instanceof Error ? err.message : 'An unexpected error occurred.',
+    });
   }
 };
 

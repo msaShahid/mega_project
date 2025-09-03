@@ -17,6 +17,7 @@
       "@services/*": ["services/*"],
       "@middlewares/*": ["middlewares/*"],
       "@controllers/*": ["controllers/*"],
+      "@validators/*": ["validators/*"],
       "@config/*": ["config/*"]
     }
   },

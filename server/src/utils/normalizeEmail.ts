@@ -4,10 +4,5 @@
  * @param email - The email address to normalize.
  * @returns The normalized email address.
  */
-export const normalizeEmail = (email: string) => {
-  if (typeof email !== 'string') {
-    throw new TypeError('Expected a string for email');
-  }
+export const normalizeEmail = (email: string) => email.trim().toLowerCase();
 
-  return email.trim().toLowerCase();
-}

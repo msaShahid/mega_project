@@ -7,8 +7,8 @@ import helmet from 'helmet';
 import config from './config/index'; 
 import connectDB from './config/db';
 import logger from './utils/logger';
-import errorHandler from './middleware/error.middleware';
-import limiter from './middleware/rateLimiter'
+import errorHandler from './middlewares/error.middleware';
+import limiter from './middlewares/rateLimiter'
 import authRoutes from './routes/auth.routes';
 
 // Connect to MongoDB
