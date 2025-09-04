@@ -18,6 +18,7 @@
       "@middlewares/*": ["middlewares/*"],
       "@controllers/*": ["controllers/*"],
       "@validators/*": ["validators/*"],
+      "@constants/*": ["constants/*"],
       "@config/*": ["config/*"]
     }
   },

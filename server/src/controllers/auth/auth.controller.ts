@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { registerUser, verifyOtp, loginUser, getAllUsers } from '@services/auth/auth.service';
 import { registerSchema, loginSchema, verifyOtpSchema } from '@validators/auth/auth.validation';
 import { generateToken } from '@utils/jwt';
+import errorFactory from '@utils/errorFactory';
 
 export const register = async (req: Request, res: Response) => {
   try {
@@ -24,7 +25,7 @@ export const register = async (req: Request, res: Response) => {
       // Zod validation error
       return res.status(400).json({ errors: error.errors.map((e: any) => e.message) });
     }
-    res.status(400).json({ error: error.message || 'An error occurred' });
+    res.status(400).json({ error: error.message || errorFactory.generalError() });
   }
 };
 
@@ -43,7 +44,7 @@ export const verifyUser = async (req: Request, res: Response) => {
     });
   } catch (err) {
     return res.status(400).json({
-      error: err instanceof Error ? err.message : 'An unexpected error occurred.',
+      error: err instanceof Error ? err.message : errorFactory.unexpectedError,
     });
   }
 };
@@ -67,7 +68,7 @@ export const login = async (req: Request, res: Response) => {
     if (error.errors) {
       return res.status(400).json({ errors: error.errors.map((e: any) => e.message) });
     }
-    res.status(400).json({ error: error.message || 'An error occurred' });
+    res.status(400).json({ error: error.message || errorFactory.generalError() });
   }
 };
 
@@ -78,6 +79,6 @@ export const listUsers = async (req: Request, res: Response) => {
 
     res.status(200).json({ users });
   } catch (error: any) {
-    res.status(500).json({ error: 'Failed to fetch users' });
+    res.status(500).json({ error: errorFactory.fetchUserFailed });
   }
 };

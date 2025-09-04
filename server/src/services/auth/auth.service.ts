@@ -2,6 +2,7 @@ import User, { IUser } from '@models/auth/user.model';
 import {generateOtp} from '@utils/generateOtp';
 import { normalizeEmail } from '@utils/normalizeEmail';
 import { sendOtpEmail } from '@utils/mailOtp';
+import errorFactory from '@utils/errorFactory';
 
 export const registerUser = async (data: {
   name: string;
@@ -14,7 +15,7 @@ export const registerUser = async (data: {
   const existingUser = await User.findOne({ email: normalizedEmail });
 
   if (existingUser && existingUser.isVerified) {
-    throw new Error('User already registered and verified.');
+    throw errorFactory.userAlreadyRegistered();
   }
 
   const { otp, otpExpires } = generateOtp();
@@ -54,11 +55,11 @@ export const verifyOtp = async (data: {
 
   const user = await User.findOne({ email: normalizedEmail });
 
-  if (!user) throw new Error('User not found.');
-  if (user.isVerified) throw new Error('User already verified.');
-  if (!user.otp || !user.otpExpires) throw new Error('No OTP found.');
+  if (!user) throw errorFactory.userNotFound(); 
+  if (user.isVerified) throw errorFactory.userAlreadyVerified();
+  if (!user.otp || !user.otpExpires) throw errorFactory.noOtpFound();
   if (user.otp !== otp || user.otpExpires < new Date()) {
-    throw new Error('Invalid or expired OTP.');
+    throw errorFactory.invalidOrExpiredOtp(); 
   }
 
   user.isVerified = true;
@@ -75,12 +76,12 @@ export const loginUser = async (data: { email: string; password: string }): Prom
 
   const user = await User.findOne({ email: normalizedEmail });
   if (!user || !user.isVerified) {
-    throw new Error('Invalid credentials or email not verified.');
+    throw errorFactory.invalidCredentials(); 
   }
 
   const isMatch = await user.comparePassword(password);
   if (!isMatch) {
-    throw new Error('Invalid credentials.');
+    throw errorFactory.wrongCredentials();
   }
 
   return user;
