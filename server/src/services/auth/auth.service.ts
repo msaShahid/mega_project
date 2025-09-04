@@ -57,9 +57,9 @@ export const verifyOtp = async (data: {
   if (!user) throw new Error('User not found.');
   if (user.isVerified) throw new Error('User already verified.');
   if (!user.otp || !user.otpExpires) throw new Error('No OTP found.');
-  // if (user.otp !== otp || user.otpExpires < new Date()) {
-  //   throw new Error('Invalid or expired OTP.');
-  // }
+  if (user.otp !== otp || user.otpExpires < new Date()) {
+    throw new Error('Invalid or expired OTP.');
+  }
 
   user.isVerified = true;
   user.otp = undefined;

@@ -36,7 +36,6 @@ export const verifyUser = async (req: Request, res: Response) => {
     return res.status(200).json({
       message: 'Account verified successfully.',
       user: {
-        id: user._id,
         name: user.name,
         email: user.email,
         isVerified: user.isVerified,
@@ -59,11 +58,10 @@ export const login = async (req: Request, res: Response) => {
     res.status(200).json({
       message: 'Login successful',
       user: {
-        id: user._id,
         name: user.name,
         email: user.email,
       },
-       token, 
+      token, 
     });
   } catch (error: any) {
     if (error.errors) {
