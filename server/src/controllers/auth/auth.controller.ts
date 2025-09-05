@@ -3,6 +3,7 @@ import { registerUser, verifyOtp, loginUser, getAllUsers } from '@services/auth/
 import { registerSchema, loginSchema, verifyOtpSchema } from '@validators/auth/auth.validation';
 import { generateToken } from '@utils/jwt';
 import errorFactory from '@utils/errorFactory';
+import successFactory from '@utils/successFactory';
 
 export const register = async (req: Request, res: Response) => {
   try {
@@ -56,14 +57,15 @@ export const login = async (req: Request, res: Response) => {
     const user = await loginUser(parsed);
     const token = generateToken(user);
 
-    res.status(200).json({
-      message: 'Login successful',
+    const responseData = {
       user: {
         name: user.name,
         email: user.email,
       },
-      token, 
-    });
+      token,
+    };
+    return res.json(successFactory.loginSuccess(responseData));
+    
   } catch (error: any) {
     if (error.errors) {
       return res.status(400).json({ errors: error.errors.map((e: any) => e.message) });
@@ -77,8 +79,11 @@ export const listUsers = async (req: Request, res: Response) => {
     const onlyVerified = req.query.verified === 'true';
     const users = await getAllUsers(onlyVerified);
 
-    res.status(200).json({ users });
+    return res.json(successFactory.dataFetched(users));
+
   } catch (error: any) {
-    res.status(500).json({ error: errorFactory.fetchUserFailed });
+
+    console.error('Failed to fetch users:', error);
+    return res.json(errorFactory.fetchDataFailed());
   }
 };
