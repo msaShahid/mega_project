@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import { registerUser, verifyOtp, loginUser, getAllUsers } from '@services/auth/auth.service';
-import { registerSchema, loginSchema, verifyOtpSchema } from '@validators/auth/auth.validation';
+import { registerUser, verifyOtp, loginUser, getAllUsers, resendOtp } from '@services/auth/auth.service';
+import { registerSchema, loginSchema, verifyOtpSchema, resendOtpSchema } from '@validators/auth/auth.validation';
 import { generateToken } from '@utils/jwt';
 import errorFactory from '@utils/errorFactory';
 import successFactory from '@utils/successFactory';
@@ -42,6 +42,22 @@ export const verifyUser = async (req: Request, res: Response) => {
         email: user.email,
         isVerified: user.isVerified,
       },
+    });
+  } catch (err) {
+    return res.status(400).json({
+      error: err instanceof Error ? err.message : errorFactory.unexpectedError,
+    });
+  }
+};
+
+export const resendOtpToUser = async (req: Request, res: Response) => {
+  try {
+    const parsed = resendOtpSchema.parse(req.body); 
+
+    await resendOtp(parsed.email);
+
+    return res.status(200).json({
+      message: 'OTP has been resent successfully.',
     });
   } catch (err) {
     return res.status(400).json({

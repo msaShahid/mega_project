@@ -70,6 +70,23 @@ export const verifyOtp = async (data: {
   return user;
 };
 
+export const resendOtp = async (email: string): Promise<void> => {
+  
+  const normalizedEmail = normalizeEmail(email);
+  const user = await User.findOne({ email: normalizedEmail });
+
+  if (!user) throw errorFactory.userNotFound();
+  if (user.isVerified) throw errorFactory.userAlreadyVerified();
+
+  const { otp, otpExpires } = generateOtp();
+
+  user.otp = otp;
+  user.otpExpires = otpExpires;
+  await user.save();
+
+  await sendOtpEmail(user.email, otp); 
+};
+
 export const loginUser = async (data: { email: string; password: string }): Promise<IUser> => {
   const { email, password } = data;
   const normalizedEmail = normalizeEmail(email)
