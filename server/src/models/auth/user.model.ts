@@ -31,14 +31,25 @@ const userSchema = new Schema<IUser>(
 userSchema.pre<IUser>('save', async function (next) {
   if (!this.isModified('password')) return next();
 
-  const salt = await bcrypt.genSalt(10);
-  this.password = await bcrypt.hash(this.password, salt);
-  next();
+  try {
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
+    next();
+  } catch (error) {
+    next(); 
+  }
 });
 
-userSchema.methods.comparePassword = function (candidatePassword: string): Promise<boolean> {
-  return bcrypt.compare(candidatePassword, this.password);
+
+userSchema.methods.comparePassword = async function (candidatePassword: string): Promise<boolean> {
+  try {
+    return await bcrypt.compare(candidatePassword, this.password);
+  } catch (error) {
+    throw new Error('Error comparing passwords');
+  }
 };
+
+userSchema.index({ resetToken: 1, otp: 1 });
 
 const User = mongoose.model<IUser>('User', userSchema);
 
