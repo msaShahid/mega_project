@@ -21,6 +21,10 @@ const errorFactory = {
   invalidToken: () => new AppError(ERROR_MESSAGES.INVALID_TOKEN, ERROR_STATUS.UNAUTHORIZED),
   tokenExpired: () => new AppError(ERROR_MESSAGES.TOKEN_EXPIRED, ERROR_STATUS.UNAUTHORIZED),
   tokenRequired: () => new AppError(ERROR_MESSAGES.TOKEN_REQUIRED, ERROR_STATUS.UNAUTHORIZED),
+  
+  // Reset Password
+  invalidOrExpiredResetToken: () => new AppError(ERROR_MESSAGES.INVALID_OR_EXPIRED_RESET_TOKEN, ERROR_STATUS.BAD_REQUEST),
+  invalidResetToken: () => new AppError(ERROR_MESSAGES.INVALID_RESET_TOKEN, ERROR_STATUS.BAD_REQUEST),
 
   // Validation / Input
   badRequest: (message = ERROR_MESSAGES.BAD_REQUEST) => new AppError(message, ERROR_STATUS.BAD_REQUEST),

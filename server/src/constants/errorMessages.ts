@@ -18,6 +18,10 @@ const ERROR_MESSAGES = {
   TOKEN_EXPIRED: 'Token has expired',
   TOKEN_REQUIRED: 'Authentication token is required',
 
+  // Password Reset
+  INVALID_OR_EXPIRED_RESET_TOKEN: 'Invalid or expired password reset token',
+  INVALID_RESET_TOKEN: 'Invalid password reset token',
+
   // Validation / Request
   BAD_REQUEST: 'Bad request',
   VALIDATION_ERROR: 'Validation failed',
