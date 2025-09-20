@@ -3,6 +3,8 @@ import {generateOtp} from '@utils/generateOtp';
 import { normalizeEmail } from '@utils/normalizeEmail';
 import { sendOtpEmail } from '@utils/mailOtp';
 import errorFactory from '@utils/errorFactory';
+import { generateResetToken } from '@utils/generateResetToken';
+import { sendResetPasswordEmail } from '@utils/sendResetPasswordEmail';
 
 export const registerUser = async (data: {
   name: string;
@@ -46,7 +48,7 @@ export const registerUser = async (data: {
   return newUser;
 };
 
-export const verifyOtp = async (data: {
+export const verifyUserOtp = async (data: {
   email: string;
   otp: string;
 }): Promise<IUser> => {
@@ -70,7 +72,7 @@ export const verifyOtp = async (data: {
   return user;
 };
 
-export const resendOtp = async (email: string): Promise<void> => {
+export const resendUserOtp = async (email: string): Promise<void> => {
   
   const normalizedEmail = normalizeEmail(email);
   const user = await User.findOne({ email: normalizedEmail });
@@ -100,6 +102,46 @@ export const loginUser = async (data: { email: string; password: string }): Prom
   if (!isMatch) {
     throw errorFactory.wrongCredentials();
   }
+
+  return user;
+};
+
+export const forgotUserPassword = async (email: string): Promise<void> => {
+  const normalizedEmail = normalizeEmail(email);
+  const user = await User.findOne({ email: normalizedEmail });
+  
+  if (!user) throw errorFactory.userNotFound(); 
+  
+  const { token, tokenExpires } = generateResetToken();
+
+  user.resetToken = token;
+  user.resetTokenExpires = tokenExpires;
+  await user.save();
+
+  await sendResetPasswordEmail(user.email, token);
+};
+
+export const resetUserPassword = async (data: { email: string; token: string; newPassword: string }): Promise<IUser> => {
+  const { email, token, newPassword } = data;
+  const normalizedEmail = normalizeEmail(email);
+
+  const user = await User.findOne({ email: normalizedEmail });
+
+  if (!user) throw errorFactory.userNotFound();
+
+  if (!user.resetToken || !user.resetTokenExpires || user.resetTokenExpires < new Date()) {
+    throw errorFactory.invalidOrExpiredResetToken();
+  }
+
+  if (user.resetToken !== token) {
+    throw errorFactory.invalidResetToken();
+  }
+
+  user.password = newPassword; 
+  user.resetToken = undefined;
+  user.resetTokenExpires = undefined;
+
+  await user.save();
 
   return user;
 };

@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { registerUser, verifyOtp, loginUser, getAllUsers, resendOtp } from '@services/auth/auth.service';
+import { registerUser, verifyUserOtp, loginUser, getAllUsers, resendUserOtp, forgotUserPassword, resetUserPassword } from '@services/auth/auth.service';
 import { registerSchema, loginSchema, verifyOtpSchema, resendOtpSchema } from '@validators/auth/auth.validation';
 import { generateToken } from '@utils/jwt';
 import errorFactory from '@utils/errorFactory';
@@ -30,10 +30,10 @@ export const register = async (req: Request, res: Response) => {
   }
 };
 
-export const verifyUser = async (req: Request, res: Response) => {
+export const verifyOtp = async (req: Request, res: Response) => {
   try {
     const parsed = verifyOtpSchema.parse(req.body);
-    const user = await verifyOtp(parsed);
+    const user = await verifyUserOtp(parsed);
 
     return res.status(200).json({
       message: 'Account verified successfully.',
@@ -50,11 +50,11 @@ export const verifyUser = async (req: Request, res: Response) => {
   }
 };
 
-export const resendOtpToUser = async (req: Request, res: Response) => {
+export const resendOtp = async (req: Request, res: Response) => {
   try {
     const parsed = resendOtpSchema.parse(req.body); 
 
-    await resendOtp(parsed.email);
+    await resendUserOtp(parsed.email);
 
     return res.status(200).json({
       message: 'OTP has been resent successfully.',
@@ -89,6 +89,40 @@ export const login = async (req: Request, res: Response) => {
     res.status(400).json({ error: error.message || errorFactory.generalError() });
   }
 };
+
+export const forgotPassword = async (req: Request, res: Response)=> {
+  const { email } = req.body;
+  
+  try {
+    await forgotUserPassword(email);
+    res.status(200).json({
+      message: 'Password reset link sent to your email.',
+    });
+  } catch (error: any) {
+    if (error.errors) {
+      return res.status(400).json({ errors: error.errors.map((e: any) => e.message) });
+    }
+    res.status(400).json({ error: error.message || errorFactory.generalError() });
+  }
+};
+
+export const resetPassword = async (req: Request, res: Response) => {
+  const { email, token, newPassword } = req.body;
+
+  try {
+    const updatedUser = await resetUserPassword({ email, token, newPassword });
+    res.status(200).json({
+      message: 'Password has been reset successfully.',
+      user: updatedUser,
+    });
+  } catch (error: any) {
+    if (error.errors) {
+      return res.status(400).json({ errors: error.errors.map((e: any) => e.message) });
+    }
+    res.status(400).json({ error: error.message || errorFactory.generalError() });
+  }
+};
+
 
 export const listUsers = async (req: Request, res: Response) => {
   try {
