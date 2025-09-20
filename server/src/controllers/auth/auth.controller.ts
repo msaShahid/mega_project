@@ -1,9 +1,9 @@
 import { Request, Response } from 'express';
 import { registerUser, verifyUserOtp, loginUser, getAllUsers, resendUserOtp, forgotUserPassword, resetUserPassword } from '@services/auth/auth.service';
 import { registerSchema, loginSchema, verifyOtpSchema, resendOtpSchema } from '@validators/auth/auth.validation';
-import { generateToken } from '@utils/jwt';
-import errorFactory from '@utils/errorFactory';
-import successFactory from '@utils/successFactory';
+import { generateToken } from '@utils/jwt/jwt';
+import errorFactory from '@utils/errors/errorFactory';
+import successFactory from '@utils/success/successFactory';
 
 export const register = async (req: Request, res: Response) => {
   try {

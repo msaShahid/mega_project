@@ -1,4 +1,4 @@
-import AppError from '@utils/appError';
+import AppError from '@utils/errors/appError';
 import ERROR_MESSAGES from '@constants/errorMessages.js';
 import ERROR_STATUS from '@constants/errorStatus.js';
 

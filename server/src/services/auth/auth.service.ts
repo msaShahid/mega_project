@@ -1,10 +1,10 @@
 import User, { IUser } from '@models/auth/user.model';
-import {generateOtp} from '@utils/generateOtp';
-import { normalizeEmail } from '@utils/normalizeEmail';
-import { sendOtpEmail } from '@utils/mailOtp';
-import errorFactory from '@utils/errorFactory';
-import { generateResetToken } from '@utils/generateResetToken';
-import { sendResetPasswordEmail } from '@utils/sendResetPasswordEmail';
+import {generateOtp} from '@utils/jwt/generateOtp';
+import { normalizeEmail } from '@utils/string/normalizeEmail';
+import { sendOtpEmail } from '@utils/mail/mailOtp';
+import errorFactory from '@utils/errors/errorFactory';
+import { generateResetToken } from '@utils/jwt/generateResetToken';
+import { sendResetPasswordEmail } from '@utils/mail/sendResetPasswordEmail';
 
 export const registerUser = async (data: {
   name: string;
