@@ -39,9 +39,6 @@ userProfileSchema.pre('save', function (next) {
   next();
 });
 
-
-userProfileSchema.index({ user: 1 });
-
 const UserProfile = model<IUserProfile>('UserProfile', userProfileSchema);
 
 export default UserProfile;

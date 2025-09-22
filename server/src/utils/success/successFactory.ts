@@ -1,4 +1,4 @@
-import AppSuccess from '@utils/appSuccess';
+import AppSuccess from '@utils/success/appSuccess';
 import SUCCESS_MESSAGES from '@constants/successMessages.js';
 import SUCCESS_STATUS from '@constants/successStatus.js';
 

@@ -1,4 +1,5 @@
 import User, { IUser } from '@models/auth/user.model';
+import UserProfile from '@models/auth/userProfile.model';
 import {generateOtp} from '@utils/jwt/generateOtp';
 import { normalizeEmail } from '@utils/string/normalizeEmail';
 import { sendOtpEmail } from '@utils/mail/mailOtp';
@@ -43,6 +44,12 @@ export const registerUser = async (data: {
   });
 
   await newUser.save();
+
+  await UserProfile.create({
+    user: newUser._id,
+    name: newUser.name,
+  });
+
   await sendOtpEmail(email, otp);
 
   return newUser;
