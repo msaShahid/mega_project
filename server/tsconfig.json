@@ -17,6 +17,7 @@
       "@services/*": ["services/*"],
       "@middlewares/*": ["middlewares/*"],
       "@controllers/*": ["controllers/*"],
+      "@routes/*": ["routes/*"],
       "@validators/*": ["validators/*"],
       "@constants/*": ["constants/*"],
       "@config/*": ["config/*"]
