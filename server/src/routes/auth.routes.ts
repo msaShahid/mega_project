@@ -1,6 +1,8 @@
 import express from 'express';
 import { register, verifyOtp, resendOtp, login, forgotPassword, resetPassword, listUsers } from '@controllers/auth/auth.controller';
-import { requireAuth } from '@middlewares/auth.middleware';
+import { authenticate } from '@middlewares/auth.middleware';
+
+
 
 const router = express.Router();
 
@@ -11,6 +13,6 @@ router.post('/login', login);
 router.post('/forgot-password', forgotPassword);
 router.post('/reset-password', resetPassword);
 
-router.get('/users', requireAuth ,listUsers);
+router.get('/users', authenticate ,listUsers);
 
 export default router;
