@@ -1,32 +1,41 @@
-"use client";
-import { useState,useEffect } from 'react';
+'use client';
+
+import { useState } from 'react';
 import { Brain, Menu, X, User } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
 
-export default function Navigation() {
+const navLinks = [
+  { href: '/', label: 'Home' },
+  { href: '/features', label: 'Features' },
+  { href: '/demo', label: 'Demo' },
+  { href: '/about', label: 'About' },
+  { href: '/contact', label: 'Contact' },
+];
 
-
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [hasMounted, setHasMounted] = useState(false); // NEW
+function NavLink({ href, label, onClick }: { href: string; label: string; onClick?: () => void }) {
   const pathname = usePathname();
+  const isActive = pathname === href;
 
-  const isActive = (path: string) => pathname === path;
+  return (
+    <Link
+      href={href}
+      onClick={onClick}
+      aria-current={isActive ? 'page' : undefined}
+      className={`transition-colors hover:text-blue-400 ${isActive ? 'text-blue-400' : ''}`}
+    >
+      {label}
+    </Link>
+  );
+}
 
-  useEffect(() => {
-    setHasMounted(true);
-  }, []);
+export default function Navigation() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const navLinks = [
-    { href: '/', label: 'Home' },
-    { href: '/features', label: 'Features' },
-    { href: '/demo', label: 'Demo' },
-    { href: '/about', label: 'About' },
-    { href: '/contact', label: 'Contact', isPage: true },
-  ];
-
-  if (!hasMounted) return null;
+  const handleMobileLinkClick = () => {
+    setIsMenuOpen(false);
+  };
 
   return (
     <nav className="fixed top-0 z-50 w-full border-b border-gray-800 bg-black/80 backdrop-blur-md">
@@ -40,33 +49,15 @@ export default function Navigation() {
 
           {/* Desktop Nav */}
           <div className="hidden md:flex items-center space-x-8">
-            {navLinks.map(({ href, label, isPage }) =>
-              isPage ? (
-                <Link
-                  key={href}
-                  href={href}
-                  className={`transition-colors hover:text-blue-400 ${
-                    isActive(href) ? 'text-blue-400' : ''
-                  }`}
-                >
-                  {label}
-                </Link>
-              ) : (
-                <a
-                  key={href}
-                  href={href}
-                  className="transition-colors hover:text-blue-400"
-                >
-                  {label}
-                </a>
-              )
-            )}
-            <button
-              className="flex items-center space-x-2 rounded-lg bg-gray-800 px-4 py-2 transition hover:bg-gray-700"
-            >
+            {navLinks.map((link) => (
+              <NavLink key={link.href} {...link} />
+            ))}
+
+            <button className="flex items-center space-x-2 rounded-lg bg-gray-800 px-4 py-2 transition hover:bg-gray-700">
               <User className="h-4 w-4" />
               <span>Login</span>
             </button>
+
             <Link
               href="/get-started"
               className="rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 px-6 py-2 text-white transition-all hover:from-blue-600 hover:to-purple-700 hover:scale-105"
@@ -89,42 +80,22 @@ export default function Navigation() {
         {isMenuOpen && (
           <div className="md:hidden border-t border-gray-800 py-4">
             <div className="flex flex-col space-y-4">
-              {navLinks.map(({ href, label, isPage }) =>
-                isPage ? (
-                  <Link
-                    key={href}
-                    href={href}
-                    className={`transition-colors hover:text-blue-400 ${
-                      isActive(href) ? 'text-blue-400' : ''
-                    }`}
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    {label}
-                  </Link>
-                ) : (
-                  <a
-                    key={href}
-                    href={href}
-                    className="transition-colors hover:text-blue-400"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    {label}
-                  </a>
-                )
-              )}
+              {navLinks.map((link) => (
+                <NavLink key={link.href} {...link} onClick={handleMobileLinkClick} />
+              ))}
+
               <button
-                onClick={() => {
-                  setIsMenuOpen(false);
-                }}
+                onClick={handleMobileLinkClick}
                 className="flex items-center space-x-2 w-fit rounded-lg bg-gray-800 px-4 py-2 transition hover:bg-gray-700"
               >
                 <User className="h-4 w-4" />
                 <span>Login</span>
               </button>
+
               <Link
                 href="/get-started"
                 className="w-fit rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 px-6 py-2 text-white transition-all hover:from-blue-600 hover:to-purple-700"
-                onClick={() => setIsMenuOpen(false)}
+                onClick={handleMobileLinkClick}
               >
                 Get Started
               </Link>
