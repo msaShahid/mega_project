@@ -1,8 +1,15 @@
+import type { Metadata } from "next";
+import Contact from "@/components/website/contact";
+
+export const metadata: Metadata = {
+  title: "Contact Us | AI Platform",
+  description: "Get in touch with our AI experts and explore tailored solutions.",
+};
+
 export default function ContactPage() {
   return (
     <div>
-      <h1>Contact</h1>
-      <p>Get in touch at contact@example.com</p>
+      <Contact />
     </div>
   );
 }
