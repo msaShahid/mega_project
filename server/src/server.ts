@@ -6,16 +6,18 @@ import helmet from 'helmet';
 import { Server } from 'socket.io';
 import http from 'http';
 
-import config from '@config/index'; 
+import config from '@config/index';
 import connectDB from '@config/db';
 import logger from '@utils/logger';
 import errorHandler from './middlewares/error.middleware';
 import limiter from '@middlewares/rateLimiter'
-import authRoutes from '@routes/auth.routes';
-import chatRoute from  '@routes/chat.routes'
-import friendRoute from  '@routes/friend.routes'
+import authRoutes from '@routes/v1/auth.routes';
+import chatRoute from '@routes/v1/chat.routes'
+import friendRoute from '@routes/v1/friend.routes'
+import notificationRoute from '@routes/v1/notification.routes'
 import { authenticateSocket } from 'socket/authenticateSocket';
 import { registerChatHandlers } from 'socket/chatHandlers';
+import apiRoutes from '@routes/index';
 
 // Connect to MongoDB
 connectDB(config.mongoURI);
@@ -23,8 +25,11 @@ connectDB(config.mongoURI);
 // Initialize Express app
 const app = express();
 
+// API version
+const API_VERSION = process.env.API_VERSION || 'v1';
+
 // Apply security middlewares
-app.use(helmet());      
+app.use(helmet());
 
 // Middlewares
 app.use(cors());
@@ -62,9 +67,13 @@ io.on('connection', (socket) => {
   });
 })
 
-app.use('/api/auth', authRoutes);
-app.use('/api/chat', chatRoute);
-app.use('/api/friends', friendRoute);
+// app.use('/api/auth', authRoutes);
+// app.use('/api/chat', chatRoute);
+// app.use('/api/friends', friendRoute);
+// app.use('/api/notification', notificationRoute);
+
+app.use('/api', apiRoutes);
+
 
 app.get('/', (req, res) => {
   res.send('Hello Secure TypeScript World!');
