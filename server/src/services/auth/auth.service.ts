@@ -7,153 +7,163 @@ import errorFactory from '@utils/errors/errorFactory';
 import { generateResetToken } from '@utils/jwt/generateResetToken';
 import { sendResetPasswordEmail } from '@utils/mail/sendResetPasswordEmail';
 
-export const registerUser = async (data: {
-  name: string;
-  email: string;
-  password: string;
-}): Promise<IUser> => {
-  const { name, email, password } = data;
-  const normalizedEmail = normalizeEmail(email);
+class AuthService {
 
-  const existingUser = await User.findOne({ email: normalizedEmail });
+  private userModel = User;
+  private userProfileModel = UserProfile;
 
-  if (existingUser && existingUser.isVerified) {
-    throw errorFactory.userAlreadyRegistered();
-  }
+  async registerUser(data: {name: string;email: string;password: string;}): Promise<IUser> {
+    const { name, email, password } = data;
+    const normalizedEmail = normalizeEmail(email);
 
-  const { otp, otpExpires } = generateOtp();
+    const existingUser = await this.userModel.findOne({ email: normalizedEmail });
 
-  if (existingUser) {
-    // Update OTP for unverified user
-    existingUser.otp = otp;
-    existingUser.otpExpires = otpExpires;
-    await existingUser.save();
+    if (existingUser && existingUser.isVerified) {
+      throw errorFactory.userAlreadyRegistered();
+    }
+
+    const { otp, otpExpires } = generateOtp();
+
+    if (existingUser) {
+      const updatedUser = await this.userModel.findOneAndUpdate(
+        { email: normalizedEmail },
+        { otp, otpExpires },
+        { new: true }
+      );
+
+      if (!updatedUser) {
+        throw new Error('User not found after update');
+      }
+
+      await sendOtpEmail(email, otp);
+
+      return updatedUser;
+    }
+
+
+    // Create new user
+    const newUser = new User({
+      name,
+      email,
+      normalizedEmail,
+      password,
+      otp,
+      otpExpires,
+      isVerified: false,
+    });
+
+    await newUser.save();
+
+    await this.userProfileModel.create({
+      user: newUser._id,
+      name: newUser.name,
+    });
+
     await sendOtpEmail(email, otp);
-    return existingUser;
-  }
 
-  // Create new user
-  const newUser = new User({
-    name,
-    email,
-    normalizedEmail,
-    password,
-    otp,
-    otpExpires,
-    isVerified: false,
-  });
+    return newUser;
+  };
 
-  await newUser.save();
+  async verifyUserOtp(data: {email: string;otp: string;}): Promise<IUser> {
+    const { email, otp } = data;
+    const normalizedEmail = normalizeEmail(email);
 
-  await UserProfile.create({
-    user: newUser._id,
-    name: newUser.name,
-  });
+    const user = await User.findOne({ email: normalizedEmail });
 
-  await sendOtpEmail(email, otp);
+    if (!user) throw errorFactory.userNotFound(); 
+    if (user.isVerified) throw errorFactory.userAlreadyVerified();
+    if (!user.otp || !user.otpExpires) throw errorFactory.noOtpFound();
+    if (user.otp !== otp || user.otpExpires < new Date()) {
+      throw errorFactory.invalidOrExpiredOtp(); 
+    }
 
-  return newUser;
-};
+    user.isVerified = true;
+    user.otp = undefined;
+    user.otpExpires = undefined;
+    await user.save();
 
-export const verifyUserOtp = async (data: {
-  email: string;
-  otp: string;
-}): Promise<IUser> => {
-  const { email, otp } = data;
-  const normalizedEmail = normalizeEmail(email);
+    return user;
+  };
 
-  const user = await User.findOne({ email: normalizedEmail });
+  async resendUserOtp(email: string): Promise<void> {
+    
+    const normalizedEmail = normalizeEmail(email);
+    const user = await User.findOne({ email: normalizedEmail });
 
-  if (!user) throw errorFactory.userNotFound(); 
-  if (user.isVerified) throw errorFactory.userAlreadyVerified();
-  if (!user.otp || !user.otpExpires) throw errorFactory.noOtpFound();
-  if (user.otp !== otp || user.otpExpires < new Date()) {
-    throw errorFactory.invalidOrExpiredOtp(); 
-  }
+    if (!user) throw errorFactory.userNotFound();
+    if (user.isVerified) throw errorFactory.userAlreadyVerified();
 
-  user.isVerified = true;
-  user.otp = undefined;
-  user.otpExpires = undefined;
-  await user.save();
+    const { otp, otpExpires } = generateOtp();
 
-  return user;
-};
+    user.otp = otp;
+    user.otpExpires = otpExpires;
+    await user.save();
 
-export const resendUserOtp = async (email: string): Promise<void> => {
-  
-  const normalizedEmail = normalizeEmail(email);
-  const user = await User.findOne({ email: normalizedEmail });
+    await sendOtpEmail(user.email, otp); 
+  };
 
-  if (!user) throw errorFactory.userNotFound();
-  if (user.isVerified) throw errorFactory.userAlreadyVerified();
+  async loginUser(data: { email: string; password: string }): Promise<IUser> {
+    const { email, password } = data;
+    const normalizedEmail = normalizeEmail(email)
 
-  const { otp, otpExpires } = generateOtp();
+    const user = await User.findOne({ email: normalizedEmail });
+    if (!user || !user.isVerified) {
+      throw errorFactory.invalidCredentials(); 
+    }
 
-  user.otp = otp;
-  user.otpExpires = otpExpires;
-  await user.save();
+    const isMatch = await user.comparePassword(password);
+    if (!isMatch) {
+      throw errorFactory.wrongCredentials();
+    }
 
-  await sendOtpEmail(user.email, otp); 
-};
+    return user;
+  };
 
-export const loginUser = async (data: { email: string; password: string }): Promise<IUser> => {
-  const { email, password } = data;
-  const normalizedEmail = normalizeEmail(email)
+  async forgotUserPassword(email: string): Promise<void> {
+    const normalizedEmail = normalizeEmail(email);
+    const user = await User.findOne({ email: normalizedEmail });
+    
+    if (!user) throw errorFactory.userNotFound(); 
+    
+    const { token, tokenExpires } = generateResetToken();
 
-  const user = await User.findOne({ email: normalizedEmail });
-  if (!user || !user.isVerified) {
-    throw errorFactory.invalidCredentials(); 
-  }
+    user.resetToken = token;
+    user.resetTokenExpires = tokenExpires;
+    await user.save();
 
-  const isMatch = await user.comparePassword(password);
-  if (!isMatch) {
-    throw errorFactory.wrongCredentials();
-  }
+    await sendResetPasswordEmail(user.email, token);
+  };
 
-  return user;
-};
+  async resetUserPassword(data: { email: string; token: string; newPassword: string }): Promise<IUser> {
+    const { email, token, newPassword } = data;
+    const normalizedEmail = normalizeEmail(email);
 
-export const forgotUserPassword = async (email: string): Promise<void> => {
-  const normalizedEmail = normalizeEmail(email);
-  const user = await User.findOne({ email: normalizedEmail });
-  
-  if (!user) throw errorFactory.userNotFound(); 
-  
-  const { token, tokenExpires } = generateResetToken();
+    const user = await User.findOne({ email: normalizedEmail });
 
-  user.resetToken = token;
-  user.resetTokenExpires = tokenExpires;
-  await user.save();
+    if (!user) throw errorFactory.userNotFound();
 
-  await sendResetPasswordEmail(user.email, token);
-};
+    if (!user.resetToken || !user.resetTokenExpires || user.resetTokenExpires < new Date()) {
+      throw errorFactory.invalidOrExpiredResetToken();
+    }
 
-export const resetUserPassword = async (data: { email: string; token: string; newPassword: string }): Promise<IUser> => {
-  const { email, token, newPassword } = data;
-  const normalizedEmail = normalizeEmail(email);
+    if (user.resetToken !== token) {
+      throw errorFactory.invalidResetToken();
+    }
 
-  const user = await User.findOne({ email: normalizedEmail });
+    user.password = newPassword; 
+    user.resetToken = undefined;
+    user.resetTokenExpires = undefined;
 
-  if (!user) throw errorFactory.userNotFound();
+    await user.save();
 
-  if (!user.resetToken || !user.resetTokenExpires || user.resetTokenExpires < new Date()) {
-    throw errorFactory.invalidOrExpiredResetToken();
-  }
+    return user;
+  };
 
-  if (user.resetToken !== token) {
-    throw errorFactory.invalidResetToken();
-  }
+  async getAllUsers(onlyVerified = false): Promise<IUser[]> {
+    const filter = onlyVerified ? { isVerified: true } : {};
+    return await User.find(filter).select('-password -otp -otpExpires -resetToken -resetTokenExpires');
+  };
 
-  user.password = newPassword; 
-  user.resetToken = undefined;
-  user.resetTokenExpires = undefined;
+}
 
-  await user.save();
-
-  return user;
-};
-
-export const getAllUsers = async (onlyVerified = false): Promise<IUser[]> => {
-  const filter = onlyVerified ? { isVerified: true } : {};
-  return await User.find(filter).select('-password -otp -otpExpires');
-};
+export default new AuthService();
