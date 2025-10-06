@@ -5,16 +5,11 @@ import compression from 'compression';
 import helmet from 'helmet';
 import { Server } from 'socket.io';
 import http from 'http';
-
 import config from '@config/index';
 import connectDB from '@config/db';
 import logger from '@utils/logger';
 import errorHandler from './middlewares/error.middleware';
 import limiter from '@middlewares/rateLimiter'
-import authRoutes from '@routes/v1/auth.routes';
-import chatRoute from '@routes/v1/chat.routes'
-import friendRoute from '@routes/v1/friend.routes'
-import notificationRoute from '@routes/v1/notification.routes'
 import { authenticateSocket } from 'socket/authenticateSocket';
 import { registerChatHandlers } from 'socket/chatHandlers';
 import apiRoutes from '@routes/index';
@@ -24,9 +19,6 @@ connectDB(config.mongoURI);
 
 // Initialize Express app
 const app = express();
-
-// API version
-const API_VERSION = process.env.API_VERSION || 'v1';
 
 // Apply security middlewares
 app.use(helmet());
@@ -66,11 +58,6 @@ io.on('connection', (socket) => {
     console.log('Socket disconnected:', user?.email);
   });
 })
-
-// app.use('/api/auth', authRoutes);
-// app.use('/api/chat', chatRoute);
-// app.use('/api/friends', friendRoute);
-// app.use('/api/notification', notificationRoute);
 
 app.use('/api', apiRoutes);
 
