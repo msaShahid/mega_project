@@ -53,10 +53,13 @@ export default function Navigation() {
               <NavLink key={link.href} {...link} />
             ))}
 
-            <button className="flex items-center space-x-2 rounded-lg bg-gray-800 px-4 py-2 transition hover:bg-gray-700">
+            <Link 
+              href={'/signin'}
+              className="flex items-center space-x-2 rounded-lg bg-gray-800 px-4 py-2 transition hover:bg-gray-700"
+            >
               <User className="h-4 w-4" />
               <span>Login</span>
-            </button>
+            </Link>
 
             <Link
               href="/get-started"
@@ -84,13 +87,14 @@ export default function Navigation() {
                 <NavLink key={link.href} {...link} onClick={handleMobileLinkClick} />
               ))}
 
-              <button
+              <Link
+                href={'/signin'}
                 onClick={handleMobileLinkClick}
                 className="flex items-center space-x-2 w-fit rounded-lg bg-gray-800 px-4 py-2 transition hover:bg-gray-700"
               >
                 <User className="h-4 w-4" />
                 <span>Login</span>
-              </button>
+              </Link>
 
               <Link
                 href="/get-started"
