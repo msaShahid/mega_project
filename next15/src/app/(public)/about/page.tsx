@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import AboutSection from '@/components/website/about';
+import AboutSection from '@/components/website/About';
 
 export const metadata: Metadata = {
   title: "About | AI Platform",

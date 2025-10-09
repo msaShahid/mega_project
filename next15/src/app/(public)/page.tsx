@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Home from "@/components/website/home";
+import Home from "@/components/website/Home";
 
 export const metadata: Metadata = {
   title: "Home | AI Platform",

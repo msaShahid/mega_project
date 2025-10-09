@@ -1,6 +1,5 @@
-import type { Metadata } from "next";
-import Header from '@/components/website/header';
-import Footer from '@/components/website/footer';
+import type { Metadata } from 'next';
+import ClientLayout from '@/components/layouts/ClientLayout';
 
 export const metadata: Metadata = {
   title: {
@@ -18,14 +17,6 @@ export const metadata: Metadata = {
   },
 };
 
-
 export default function PublicLayout({ children }: { children: React.ReactNode }) {
- 
-  return (
-    <div className="flex min-h-screen flex-col bg-black text-white">
-      <Header />
-        <main className="flex-1">{children}</main>
-      <Footer />
-    </div>
-  );
+  return <ClientLayout>{children}</ClientLayout>;
 }

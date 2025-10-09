@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Features from "@/components/website/features";
+import Features from "@/components/website/Features";
 
 export const metadata: Metadata = {
   title: "Features | AI Platform",
@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 export default function FeaturesPage() {
   return (
     <div>
-      <Features/>
+      <Features />
     </div>
   );
 }
